@@ -91,8 +91,13 @@ done
 
 # Warning, rest of this code is nasty looking, but it works.
 if [[ "$mode" == "manual" ]]; then
-    extraData="\t\"manualPorts\": [$manualPorts]"
+    extraData+="\t\"manualPorts\": [$manualPorts],\n"
 fi
+localIPs=$(hostname -I)
+filteredIP=${localIPs// /\", \"}
+outp=${filteredIP::-3}
+extraData+="\t\"hostData\": {\n\t\t\"FQDN\": \"$(hostname -f)\",\n\t\t\"IPs\": [\"$outp],\n\t\t\"user\": \"$(whoami)\",\n"
+extraData+="\t\t\"lastStartup\": \"$(uptime -s)\"\n\t}"
 outputData="{\n\t\"scanResult\":{\n"
 First=true
 outStr=""
