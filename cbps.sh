@@ -1,6 +1,7 @@
 #!/bin/bash
 # Crappy Bash port scanner
 # Written by: Arttu Mahlakaarto
+# https://github.com/amahlaka/CrappyBashPortScanner
 
 usage() {
     echo "Crappy Bash Port Scanner v0.1  - Written by: Arttu Mahlakaarto
