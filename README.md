@@ -5,10 +5,12 @@ A simple port scanner in bash, for when you dont have nmap available.
 ## Usage
 
 ```
-cbps.sh -i [Target IP addresses/hostnames] {-m <Scan mode> | -p [Ports to scan]} -o <Output file name (Without extension)>
+cbps.sh -i [Target IP addresses/hostnames] {-m <Scan mode> | -p [Ports to scan]} -o <Output file name (Without extension)> -q -s
 -i [IP address list]            Comma seperated list of IP addresses (or hostnames) to scan.
 -m <quick|full>                 Scanning mode, quick scans only most popular ports, full scans all ports (1-65535).
 -p [Port numbers]               Comma seperated list of ports to scan, can also be used with with -m quick.
+-q                              Quiet mode, prints no output to terminal.
+-s                              Skip ping scan of hosts
 -o <Output filename>            Scan results will be saved to <Output filename>.json in the current directory.
                                 If not set, the output will be printed to the console in json format
 
