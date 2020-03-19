@@ -36,7 +36,7 @@ skip=false
 while getopts ":i:p:o:m:h:qs" opt; do
     case $opt in
     i)
-        targets=(${OPTARG//,/ })
+        targetsIn=(${OPTARG//,/ })
         ;;
     p)
         ports+=(${OPTARG//,/ })
@@ -76,9 +76,41 @@ while getopts ":i:p:o:m:h:qs" opt; do
 done
 
 
-if [ -z $targets ] || [ -z $ports ]; then
+if [ -z $targetsIn ] || [ -z $ports ]; then
 usage
 fi
+
+targets=()
+
+# adapted from https://stackoverflow.com/questions/16986879/bash-script-to-list-all-ips-in-prefix/44001530
+function ExpandNet() 
+{
+    base=${1%/*}
+    masksize=${1#*/}
+    
+    [ $masksize -lt 8 ] && { echo "Max range is /8."; exit 1;}
+
+    mask=$(( 0xFFFFFFFF << (32 - $masksize) ))
+
+    IFS=. read a b c d <<< $base
+
+    ip=$(( ($b << 16) + ($c << 8) + $d ))
+
+    ipstart=$(( $ip & $mask ))
+    ipend=$(( ($ipstart | ~$mask ) & 0x7FFFFFFF ))
+
+    for i in $(seq $ipstart $ipend); do
+        targets+=($a.$(( ($i & 0xFF0000) >> 16 )).$(( ($i & 0xFF00) >> 8 )).$(( $i & 0x00FF )))
+    done 
+}
+
+for target in "${targetsIn[@]}"; do
+    if [[ $target == *"/"* ]]; then
+        ExpandNet $target
+    else 
+        targets+=($target)
+    fi
+done
 
 function PingHosts()
 {
